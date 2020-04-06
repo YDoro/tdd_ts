@@ -1,19 +1,14 @@
 import { HttpRequest, HttpResponse } from '../protocols/http'
 import { MissingParamError } from '../errors/missing-param-error'
+import { unprocessableEntity } from '../helpers/http-helper'
 
 export class SignUpController {
   handle (httpRequest: HttpRequest): HttpResponse {
     if (!httpRequest.body.name) {
-      return {
-        statusCode: 422,
-        body: new MissingParamError('name')
-      }
+      return unprocessableEntity(new MissingParamError('name'))
     }
     if (!httpRequest.body.email) {
-      return {
-        statusCode: 422,
-        body: new MissingParamError('email')
-      }
+      return unprocessableEntity(new MissingParamError('email'))
     }
   }
 }
