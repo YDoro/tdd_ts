@@ -29,4 +29,32 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(422)
     expect(httpResponse.body).toEqual(new MissingParamError('email'))
   })
+  test('Should return 422 if no password is provided', () => {
+    // sut = system under test, the class that will be tested
+    const sut = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        passwordConfirm: 'any_pass'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(422)
+    expect(httpResponse.body).toEqual(new MissingParamError('password'))
+  })
+  test('Should return 422 if no passwordConfirm is provided', () => {
+    // sut = system under test, the class that will be tested
+    const sut = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_pass'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(422)
+    expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirm'))
+  })
 })
