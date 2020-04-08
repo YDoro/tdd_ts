@@ -66,6 +66,20 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(422)
     expect(httpResponse.body).toEqual(new MissingParamError('password'))
   })
+  test('Should return 422 if passwords don`t match', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_pass',
+        passwordConfirm: 'other_pass'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(422)
+    expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirm'))
+  })
   test('Should return 422 if no passwordConfirm is provided', () => {
     const { sut } = makeSut()
     const httpRequest = {
