@@ -14,6 +14,9 @@ export class SignUpController implements Controller {
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) return unprocessableEntity(new MissingParamError(field))
       }
+      if (httpRequest.body.password !== httpRequest.body.passwordConfirm) {
+        return unprocessableEntity(new InvalidParamError('passwordConfirm'))
+      }
       if (!this.emailValidator.isValid(httpRequest.body.email)) {
         return unprocessableEntity(new InvalidParamError('email'))
       }
