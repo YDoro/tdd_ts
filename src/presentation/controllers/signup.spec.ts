@@ -6,6 +6,7 @@ interface SutTypes{
   sut: SignUpController
   emailValidatorStub: EmailValidator
 }
+
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
@@ -14,14 +15,7 @@ const makeEmailValidator = (): EmailValidator => {
   }
   return new EmailValidatorStub()
 }
-const makeEmailValidatorWithError = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      throw new Error()
-    }
-  }
-  return new EmailValidatorStub()
-}
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
   const sut = new SignUpController(emailValidatorStub)
@@ -30,6 +24,7 @@ const makeSut = (): SutTypes => {
     emailValidatorStub
   }
 }
+
 describe('SignUp Controller', () => {
   test('Should return 422 if no name is provided', () => {
     // sut = system under test, the class that will be tested
@@ -46,7 +41,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('name'))
   })
   test('Should return 422 if no email is provided', () => {
-    // sut = system under test, the class that will be tested
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -60,7 +54,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('email'))
   })
   test('Should return 422 if no password is provided', () => {
-    // sut = system under test, the class that will be tested
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -74,7 +67,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('password'))
   })
   test('Should return 422 if no passwordConfirm is provided', () => {
-    // sut = system under test, the class that will be tested
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -88,7 +80,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirm'))
   })
   test('Should return 422 if no an invalid email is provided', () => {
-    // sut = system under test, the class that will be tested
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpRequest = {
@@ -104,7 +95,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
   })
   test('Should call email vailidator with the correct email', () => {
-    // sut = system under test, the class that will be tested
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
     const httpRequest = {
@@ -119,10 +109,10 @@ describe('SignUp Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('any_email')
   })
   test('Should return 500 if email validator throws', () => {
-    // sut = system under test, the class that will be tested
-    const emailValidatorStub = makeEmailValidatorWithError()
-    const sut = new SignUpController(emailValidatorStub)
-
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error()
+    })
     const httpRequest = {
       body: {
         name: 'any_name',
