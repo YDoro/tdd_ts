@@ -1,17 +1,33 @@
 import { LoginController } from './login'
 import { unprocessableEntity } from '../../helpers/http-helper'
 import { MissingParamError } from '../../errors'
-interface sutTypes{
-  sut: LoginController
+import { EmailValidator } from '../signup/signup-protocols'
+
+const makeEmailValidator = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      return true
+    }
+  }
+  return new EmailValidatorStub()
 }
+
+interface sutTypes {
+  sut: LoginController
+  emailValidatorStub: EmailValidator
+
+}
+
 const makeSut = (): sutTypes => {
-  const sut = new LoginController()
+  const emailValidatorStub = makeEmailValidator()
+  const sut = new LoginController(emailValidatorStub)
   return {
-    sut
+    sut,
+    emailValidatorStub
   }
 }
 describe('Login Controller', () => {
-  test('Shoud retunr 422 if no email is provided', async () => {
+  test('Should return 422 if no email is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -21,7 +37,7 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('email')))
   })
-  test('Shoud retunr 422 if no password is provided', async () => {
+  test('Should return 422 if no password is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -30,5 +46,17 @@ describe('Login Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('password')))
+  })
+  test('Should call EmailValidator with correct email', async () => {
+    const { sut, emailValidatorStub } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com.br',
+        password: 'anypass'
+      }
+    }
+    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
+    await sut.handle(httpRequest)
+    expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email)
   })
 })
