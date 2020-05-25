@@ -12,4 +12,14 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('email')))
   })
+  test('Shoud retunr 422 if no password is provided', async () => {
+    const sut = new LoginController()
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com.br'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('password')))
+  })
 })
