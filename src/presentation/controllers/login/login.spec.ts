@@ -1,9 +1,18 @@
 import { LoginController } from './login'
 import { unprocessableEntity } from '../../helpers/http-helper'
 import { MissingParamError } from '../../errors'
+interface sutTypes{
+  sut: LoginController
+}
+const makeSut = (): sutTypes => {
+  const sut = new LoginController()
+  return {
+    sut
+  }
+}
 describe('Login Controller', () => {
   test('Shoud retunr 422 if no email is provided', async () => {
-    const sut = new LoginController()
+    const { sut } = makeSut()
     const httpRequest = {
       body: {
         password: 'any'
@@ -13,7 +22,7 @@ describe('Login Controller', () => {
     expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('email')))
   })
   test('Shoud retunr 422 if no password is provided', async () => {
-    const sut = new LoginController()
+    const { sut } = makeSut()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com.br'
