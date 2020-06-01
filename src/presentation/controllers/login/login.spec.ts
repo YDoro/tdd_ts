@@ -1,5 +1,5 @@
 import { LoginController } from './login'
-import { unprocessableEntity, serverError } from '../../helpers/http-helper'
+import { unprocessableEntity, serverError, unauthorized } from '../../helpers/http-helper'
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../signup/signup-protocols'
 import { Authentication } from '../../../domain/usecases/authentication'
@@ -90,5 +90,11 @@ describe('Login Controller', () => {
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith(makeFakeRequest().body.email, makeFakeRequest().body.password)
+  })
+  test('Should should retunr 401 if invalid credentials was provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
