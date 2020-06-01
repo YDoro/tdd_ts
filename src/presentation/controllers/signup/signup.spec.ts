@@ -2,7 +2,7 @@ import { SignUpController } from './singnup'
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { EmailValidator, AccountModel, AddAccount, AddAccountModel } from './signup-protocols'
 import { HttpRequest } from '../../protocols'
-import { Created, serverError, unprocessableEntity } from '../../helpers/http-helper'
+import { created, serverError, unprocessableEntity } from '../../helpers/http-helper'
 
 interface SutTypes{
   sut: SignUpController
@@ -159,6 +159,6 @@ describe('SignUp Controller', () => {
   test('Should return 201 if no valid data is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(Created(makeFakeAccount()))
+    expect(httpResponse).toEqual(created(makeFakeAccount()))
   })
 })

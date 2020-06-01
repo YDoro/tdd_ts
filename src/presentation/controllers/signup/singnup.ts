@@ -1,6 +1,6 @@
 import { HttpRequest, HttpResponse, Controller, EmailValidator, AddAccount } from './signup-protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
-import { unprocessableEntity, serverError, Created } from '../../helpers/http-helper'
+import { unprocessableEntity, serverError, created } from '../../helpers/http-helper'
 
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
@@ -29,7 +29,7 @@ export class SignUpController implements Controller {
         email,
         password
       })
-      return Created(account)
+      return created(account)
     } catch (error) {
       console.error(error)
       return serverError(error)

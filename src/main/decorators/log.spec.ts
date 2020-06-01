@@ -1,6 +1,6 @@
 import { LogControllerDecorator } from './log'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
-import { serverError, Created } from '../../presentation/helpers/http-helper'
+import { serverError, created } from '../../presentation/helpers/http-helper'
 import { LogErrorRepository } from '../../data/protocols/log-error-repository'
 import { AccountModel } from '../../domain/models/account'
 interface SutTypes{
@@ -17,7 +17,7 @@ const makeSut = (): SutTypes => {
 const makeController = (): Controller => {
   class ControllerStub implements Controller {
     async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      return await new Promise(resolve => resolve(Created(makeFakeAccount())))
+      return await new Promise(resolve => resolve(created(makeFakeAccount())))
     }
   }
   return new ControllerStub()
@@ -60,7 +60,7 @@ describe('LogController Decorator', () => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(Created(makeFakeAccount()))
+    expect(httpResponse).toEqual(created(makeFakeAccount()))
   })
   test('Should should call LogErrorRepository with correct error if controller returns a server error', async () => {
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
