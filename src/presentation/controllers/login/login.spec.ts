@@ -76,7 +76,7 @@ describe('Login Controller', () => {
     await sut.handle(makeFakeRequest())
     expect(isValidSpy).toHaveBeenCalledWith(makeFakeRequest().body.email)
   })
-  test('Should should retunr 500 if EmailValidator throws', async () => {
+  test('Should should return 500 if EmailValidator throws', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new Error()
@@ -90,10 +90,16 @@ describe('Login Controller', () => {
     await sut.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith(makeFakeRequest().body.email, makeFakeRequest().body.password)
   })
-  test('Should should retunr 401 if invalid credentials was provided', async () => {
+  test('Should should return 401 if invalid credentials was provided', async () => {
     const { sut, authenticationStub } = makeSut()
     jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(unauthorized())
+  })
+  test('Should should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
