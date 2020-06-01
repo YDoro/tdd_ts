@@ -1,6 +1,6 @@
 import { Controller, HttpResponse, HttpRequest } from '../../protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
-import { unprocessableEntity, serverError } from '../../helpers/http-helper'
+import { unprocessableEntity, serverError, unauthorized } from '../../helpers/http-helper'
 import { EmailValidator } from '../signup/signup-protocols'
 import { Authentication } from '../../../domain/usecases/authentication'
 
@@ -25,7 +25,10 @@ export class LoginController implements Controller {
       if (!isVaild) {
         return unprocessableEntity(new InvalidParamError('email'))
       }
-      await this.authentication.auth(email, password)
+      const accessToken = await this.authentication.auth(email, password)
+      if (!accessToken) {
+        return unauthorized()
+      }
     } catch (error) {
       return serverError(error)
     }
