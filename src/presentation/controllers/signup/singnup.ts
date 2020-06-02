@@ -20,10 +20,7 @@ export class SignUpController implements Controller {
         return unprocessableEntity(error)
       }
 
-      const { name, email, password, passwordConfirm } = httpRequest.body
-      if (password !== passwordConfirm) {
-        return unprocessableEntity(new InvalidParamError('passwordConfirm'))
-      }
+      const { name, email, password } = httpRequest.body
       if (!this.emailValidator.isValid(email)) {
         return unprocessableEntity(new InvalidParamError('email'))
       }
