@@ -1,5 +1,5 @@
 import { SignUpController } from './singnup'
-import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
+import { MissingParamError, ServerError } from '../../errors'
 import { EmailValidator, AccountModel, AddAccount, AddAccountModel, Validation } from './signup-protocols'
 import { HttpRequest } from '../../protocols'
 import { created, serverError, unprocessableEntity } from '../../helpers/http-helper'
@@ -64,74 +64,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('SignUp Controller', () => {
-  test('Should return 422 if no name is provided', async () => {
-    // sut = system under test, the class that will be tested
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: 'any_pass',
-        passwordConfirm: 'any_pass'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('name')))
-  })
-  test('Should return 422 if no email is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        password: 'any_pass',
-        passwordConfirm: 'any_pass'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('email')))
-  })
-  test('Should return 422 if no password is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        passwordConfirm: 'any_pass'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('password')))
-  })
-  test('Should return 422 if passwords don`t match', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_pass',
-        passwordConfirm: 'other_pass'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(unprocessableEntity(new InvalidParamError('passwordConfirm')))
-  })
-  test('Should return 422 if no passwordConfirm is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_pass'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('passwordConfirm')))
-  })
-  test('Should return 422 if no an invalid email is provided', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(unprocessableEntity(new InvalidParamError('email')))
-  })
   test('Should call email vailidator with the correct email', async () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
