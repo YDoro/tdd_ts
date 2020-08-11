@@ -1,10 +1,12 @@
 {
   "name": "clean_node_api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "sucrase-node src/main/server.ts",
+    "start": "node  dist/main/server.js",
+    "build": "tsc",
+    "dev": "sucrase-node src/main/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:unit": "npm test --  --watch -c jest-unit-config.js",
     "test:integration": "npm test --  --watch -c jest-integration-config.js",
@@ -17,7 +19,6 @@
   "dependencies": {
     "bcrypt": "^4.0.1",
     "express": "^4.17.1",
-    "fast-glob": "^3.2.2",
     "git-commit-msg-linter": "^2.4.2",
     "jsonwebtoken": "^8.5.1",
     "validator": "^13.0.0"
