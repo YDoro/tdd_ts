@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node  dist/main/server.js",
     "build": "tsc",
-    "dev": "sucrase-node src/main/server.ts",
+    "dev": "npm run build && docker-compose up",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:unit": "npm test --  --watch -c jest-unit-config.js",
     "test:integration": "npm test --  --watch -c jest-integration-config.js",
@@ -44,7 +44,6 @@
     "husky": "^4.2.3",
     "jest": "^25.2.7",
     "lint-staged": "^10.1.1",
-    "sucrase": "^3.13.0",
     "supertest": "^4.0.2",
     "ts-jest": "^25.3.1",
     "typescript": "^3.8.3"
