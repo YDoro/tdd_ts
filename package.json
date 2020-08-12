@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node  dist/main/server.js",
-    "debug": "node --inspect=0.0.0.0:9222 dist/main/server.js",
+    "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
     "build": "tsc",
     "dev": "npm run build && docker-compose up ",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
@@ -23,6 +23,7 @@
     "git-commit-msg-linter": "^2.4.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.0",
+    "nodemon": "^2.0.4",
     "validator": "^13.0.0"
   },
   "devDependencies": {
