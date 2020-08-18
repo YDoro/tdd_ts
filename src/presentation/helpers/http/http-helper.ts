@@ -10,6 +10,10 @@ export const ok = (data?: any): HttpResponse => ({
   statusCode: 200,
   body: data
 })
+export const forbidden = (error: Error): HttpResponse => ({
+  statusCode: 403,
+  body: error
+})
 export const unprocessableEntity = (error: Error): HttpResponse => ({
   statusCode: 422,
   body: error
