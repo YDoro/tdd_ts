@@ -1,5 +1,5 @@
 import { LoginController } from './login-controller'
-import { unprocessableEntity, serverError, unauthorized, ok } from '../../../helpers/http/http-helper'
+import { badRequest, serverError, unauthorized, ok } from '../../../helpers/http/http-helper'
 import { MissingParamError } from '../../../errors'
 import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
 import { AuthenticationModel } from '../../../../domain/usecases/authentication'
@@ -77,6 +77,6 @@ describe('Login Controller', () => {
     const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(unprocessableEntity(new MissingParamError('any_field')))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })

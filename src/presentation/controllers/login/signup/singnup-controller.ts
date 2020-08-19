@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse, Controller, AddAccount, Validation, Authentication } from './signup-controller-protocols'
-import { unprocessableEntity, serverError, created, forbidden } from '../../../helpers/http/http-helper'
+import { badRequest, serverError, created, forbidden } from '../../../helpers/http/http-helper'
 import { EmailInUseError } from '../../../errors'
 
 export class SignUpController implements Controller {
@@ -13,7 +13,7 @@ export class SignUpController implements Controller {
     try {
       const error = this.validation.validate(httpRequest.body)
       if (error) {
-        return unprocessableEntity(error)
+        return badRequest(error)
       }
       const { name, email, password } = httpRequest.body
       const account = await this.addAccount.add({
